@@ -18,6 +18,12 @@ async function run() {
     await client.connect();
     const database = client.db("company");
     const usersCollection = database.collection("users");
+    //Get Api
+    app.get('/users', async(req,res)=>{
+      const cursor = usersCollection.find({});
+      const users = await cursor.toArray();
+      res.send(users);
+    })
     //Post Api
     app.post('/users',async(req,res)=>{
       const newUser = req.body;
@@ -40,9 +46,6 @@ app.get('/',(req,res)=>{
   res.send('Running port on 5000')
 })
 
-app.get('/users',(req,res)=>{
-  res.send('Running port on users ')
-})
 app.listen(port,()=>{
   console.log('running server on',port)
 })
