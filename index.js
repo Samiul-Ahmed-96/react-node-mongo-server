@@ -1,37 +1,48 @@
-const { MongoClient } = require('mongodb');
+
 const express = require('express');
+const { MongoClient } = require('mongodb');
 const cors = require('cors');
 const app = express();
 const port = 5000;
+
+
+//Middleware
 app.use(cors());
 app.use(express.json());
 
-
-const uri = "mongodb+srv://myDbUserAnik:vZrBrIHffuW6rM7A@cluster0.inxey.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = "mongodb+srv://dbUserAnik:h5gVPHR70wquBped@cluster0.iy3km.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
 async function run() {
-    try {
-      await client.connect();
-      const database = client.db("clients");
-      const usersCollection = database.collection("users");
-      // create a document to insert
-      const doc = {
-        name:'Rafi',
-        email:'rafi@gmail.com',
-      }
-      const result = await usersCollection.insertOne(doc);
-      console.log(`A document was inserted with the _id: ${result.insertedId}`);
-    } finally {
-      await client.close();
-    }
+  try {
+    await client.connect();
+    const database = client.db("company");
+    const usersCollection = database.collection("users");
+    //Post Api
+    app.post('/users',async(req,res)=>{
+      const newUser = req.body;
+      const result = await usersCollection.insertOne(newUser);
+      // console.log('got new user',result);
+      // console.log('hitting the post',req.body)
+      res.json(result);
+    })
+
   }
-  run().catch(console.dir);
+   finally {
+    // await client.close();
+  }
+}
+run().catch(console.dir);
 
 
-app.get('/',(req,res) =>{
-    res.send("hello world")
+
+app.get('/',(req,res)=>{
+  res.send('Running port on 5000')
 })
 
+app.get('/users',(req,res)=>{
+  res.send('Running port on users ')
+})
 app.listen(port,()=>{
-    console.log(`Hello from listen ${port}`)
+  console.log('running server on',port)
 })
