@@ -41,6 +41,15 @@ async function run() {
         console.log('delete user id',result);
         res.json(result);
     })
+    //Update
+    app.get('/users/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+
+      const user =await usersCollection.findOne(query);
+      console.log('load user id',id)
+      res.send(user);
+    })
 
   }
    finally {
